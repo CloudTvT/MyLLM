@@ -16,7 +16,6 @@ enum class ModelBufferType{
 };
 
 }// end namespace model
-
 // 将您的命名空间定义为kuiper_base，避免与glog的base命名空间冲突
 namespace kuiper_base{
 /**

@@ -15,7 +15,7 @@ class Buffer : public NoCopyable,std::enable_shared_from_this<Buffer>{
     bool use_external_ = false;
     DeviceType device_type_ = DeviceType::kDeviceUnknown;
     std::shared_ptr<DeviceAllocator> allocator_ = nullptr;
-
+    
   public:
     explicit Buffer() = default;
     explicit Buffer(size_t byte_size,std::shared_ptr<DeviceAllocator> allocator,
@@ -27,12 +27,11 @@ class Buffer : public NoCopyable,std::enable_shared_from_this<Buffer>{
     void copy_from(const Buffer& src_buffer) const;
     void copy_from(const Buffer* src_buffer) const; // 显式传递地址，允许nullptr
 
-    void* ptr();
+    void* ptr(); 
 
     const void* ptr() const; // 常量对象调用
-
     size_t byte_size() const;
-
+    
     std::shared_ptr<DeviceAllocator> allocator() const;
 
     DeviceType device_type() const;

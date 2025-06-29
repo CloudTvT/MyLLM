@@ -1,4 +1,6 @@
-#include "base.h"
+#ifndef KUIPER_INCLUDE_BASE_ALLOC_H_
+#define KUIPER_INCLUDE_BASE_ALLOC_H_
+#include "base/base.h"
 #include <map>
 #include <memory>
 #include <vector> 
@@ -127,6 +129,6 @@ class AscendDeviceAllocatorFactory {
   static std::shared_ptr<AscendDeviceAllocator> instance;
 };
 
-
 } // end namespace kuiper_base
+#endif  // KUIPER_INCLUDE_BASE_ALLOC_H_
 

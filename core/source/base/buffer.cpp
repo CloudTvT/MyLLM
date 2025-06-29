@@ -74,10 +74,60 @@ bool Buffer::allocate(){
 
 // TODO: 添加copy_from函数
 void Buffer::copy_from(const Buffer* buffer) const {
+  CHECK(allocator_ != nullptr);
+  CHECK(buffer != nullptr || buffer->ptr() != nullptr);
 
+  size_t dest_size = byte_size_;
+  size_t src_size = buffer->byte_size();
+  size_t byte_size = src_size < dest_size ? src_size : dest_size;
+
+  const DeviceType& buffer_device = buffer->device_type();
+  const DeviceType& current_device = this->device_type_;
+
+  CHECK(buffer_device != DeviceType::kDeviceUnknown &&
+        current_device != DeviceType::kDeviceUnknown);
+  
+  if (buffer_device == DeviceType::kDeviceCPU &&
+      current_device == DeviceType::kDeviceCPU) {
+    return allocator_->memcpy(buffer->ptr_, this->ptr_, byte_size);
+  } else if (buffer_device == DeviceType::kDeviceCUDA &&
+             current_device == DeviceType::kDeviceCPU) {
+    return allocator_->memcpy(buffer->ptr_, this->ptr_, byte_size,
+                              MemcpyKind::kMemcpyCUDA2CPU);
+  } else if (buffer_device == DeviceType::kDeviceCPU &&
+             current_device == DeviceType::kDeviceCUDA) {
+    return allocator_->memcpy(buffer->ptr_, this->ptr_, byte_size,
+                              MemcpyKind::kMemcpyCPU2CUDA);
+  } else {
+    return allocator_->memcpy(buffer->ptr_, this->ptr_, byte_size,
+                              MemcpyKind::kMemcpyCUDA2CUDA);
+  }
 }
 
 void Buffer::copy_from(const Buffer& buffer) const {
+  CHECK(allocator_ != nullptr);
+  CHECK(buffer.ptr_ != nullptr);
 
+  size_t byte_size = byte_size_ < buffer.byte_size_ ? byte_size_ : buffer.byte_size_;
+  const DeviceType& buffer_device = buffer.device_type();
+  const DeviceType& current_device = this->device_type();
+  CHECK(buffer_device != DeviceType::kDeviceUnknown &&
+        current_device != DeviceType::kDeviceUnknown);
+
+  if (buffer_device == DeviceType::kDeviceCPU &&
+      current_device == DeviceType::kDeviceCPU) {
+    return allocator_->memcpy(buffer.ptr(), this->ptr_, byte_size);
+  } else if (buffer_device == DeviceType::kDeviceCUDA &&
+             current_device == DeviceType::kDeviceCPU) {
+    return allocator_->memcpy(buffer.ptr(), this->ptr_, byte_size,
+                              MemcpyKind::kMemcpyCUDA2CPU);
+  } else if (buffer_device == DeviceType::kDeviceCPU &&
+             current_device == DeviceType::kDeviceCUDA) {
+    return allocator_->memcpy(buffer.ptr(), this->ptr_, byte_size,
+                              MemcpyKind::kMemcpyCPU2CUDA);
+  } else {
+    return allocator_->memcpy(buffer.ptr(), this->ptr_, byte_size,
+                              MemcpyKind::kMemcpyCUDA2CUDA);
+  }
 }
 } // end namespace kuiper_base  
