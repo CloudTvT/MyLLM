@@ -20,6 +20,25 @@ TEST(test_tensor, to_cpu) {
   }
 }
 
+TEST(test_tensor, test_memory_pool) {
+  using namespace kuiper_base;
+  auto alloc_cu = CUDADeviceAllocatorFactory::get_instance();
+  tensor::Tensor t1_cu(DataType::kDataTypeFp32, 1024, 1024, true, alloc_cu);
+  set_value_cu(t1_cu.ptr<float>(), 1024 * 1024);
+  t1_cu.reset(DataType::kDataTypeFp32,t1_cu.dims());
+  tensor::Tensor t2_cu(DataType::kDataTypeFp32, 1024, 896, true, alloc_cu);
+
+  std::vector<tensor::Tensor> tensors;
+  for(int i = 0;i<1024*4;i++){
+    tensor::Tensor tensor_cu(DataType::kDataTypeFp32, 1024, 128, true, alloc_cu);
+    tensors.push_back(tensor_cu);
+  }
+
+  for(int i = 0;i<1024*4;i++){
+    tensors[i].reset(DataType::kDataTypeFp32,t1_cu.dims());
+  }
+}
+
 TEST(test_tensor, clone_cuda) {
   using namespace kuiper_base;
   auto alloc_cu = CUDADeviceAllocatorFactory::get_instance();

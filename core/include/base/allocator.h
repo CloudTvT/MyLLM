@@ -1,5 +1,6 @@
 #ifndef KUIPER_INCLUDE_BASE_ALLOC_H_
 #define KUIPER_INCLUDE_BASE_ALLOC_H_
+
 #include "base/base.h"
 #include <map>
 #include <memory>

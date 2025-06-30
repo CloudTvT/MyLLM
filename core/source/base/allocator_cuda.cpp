@@ -68,10 +68,10 @@ void* CUDADeviceAllocator::allocate(size_t byte_size) const {
 
 // TODO: 添加cuda后端内存释放
 void CUDADeviceAllocator::release(void* ptr) const {
-  if (ptr){
+  if (!ptr){
     return;
   }
-  if(cuda_buffers_map_.empty()){
+  if(cuda_buffers_map_.empty() && big_buffers_map_.empty()){
     return;
   }
   cudaError_t state = cudaSuccess;
@@ -102,8 +102,9 @@ void CUDADeviceAllocator::release(void* ptr) const {
         return;
       }
     }
-
-    auto& big_buffers = big_buffers_map_[it.first];
+  }
+  for(auto& it : big_buffers_map_){
+    auto& big_buffers = it.second;
     for(int i = 0;i < big_buffers.size();i++){
       if(big_buffers[i].data == ptr){
         big_buffers[i].busy = false;

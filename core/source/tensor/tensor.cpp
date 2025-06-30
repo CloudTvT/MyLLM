@@ -207,6 +207,8 @@ bool Tensor::assign(std::shared_ptr<kuiper_base::Buffer> buffer) {
   return true;
 }
 
+std::shared_ptr<kuiper_base::Buffer> Tensor::get_buffer() const { return buffer_; }
+
 void Tensor::reshape(const std::vector<int32_t>& dims){
   size_t size = reduce_dimension(dims.begin(),dims.end(),1);
   if(!buffer_){
