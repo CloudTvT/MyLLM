@@ -165,7 +165,7 @@ class Layer : public BaseLayer {
 
 class LayerParam : public Layer {
  public:
-  explicit LayerParam(base::DeviceType device_type, LayerType layer_type,
+  explicit LayerParam(kuiper_base::DeviceType device_type, LayerType layer_type,
                       bool is_quant_layer = false, std::string layer_name = "");
 
   size_t weight_size() const;
@@ -178,43 +178,10 @@ class LayerParam : public Layer {
 
   void to_cuda() override;
 
-  base::Status set_weight(int32_t idx, const tensor::Tensor& weight) override;
+  kuiper_base::Status set_weight(int32_t idx, const tensor::Tensor& weight) override;
 
-  base::Status set_weight(int32_t idx, const std::vector<int32_t>& dims, const void* weight_ptr,
-                          base::DeviceType device_type = base::DeviceType::kDeviceUnknown) override;
-
-  void set_scales(const tensor::Tensor& scales);
-
-  void set_group_size(int32_t group_size);
-
-  int32_t get_scale_num() const;
-
- protected:
-  int32_t group_size_ = 0;
-  bool is_quant_layer_ = false;
-  tensor::Tensor scales_;
-  std::vector<tensor::Tensor> weights_;
-};
-
-class LayerParam : public Layer {
- public:
-  explicit LayerParam(base::DeviceType device_type, LayerType layer_type,
-                      bool is_quant_layer = false, std::string layer_name = "");
-
-  size_t weight_size() const;
-
-  void reset_weight_size(size_t size);
-
-  tensor::Tensor& get_weight(int32_t idx);
-
-  const tensor::Tensor& get_weight(int32_t idx) const;
-
-  void to_cuda() override;
-
-  base::Status set_weight(int32_t idx, const tensor::Tensor& weight) override;
-
-  base::Status set_weight(int32_t idx, const std::vector<int32_t>& dims, const void* weight_ptr,
-                          base::DeviceType device_type = base::DeviceType::kDeviceUnknown) override;
+  kuiper_base::Status set_weight(int32_t idx, const std::vector<int32_t>& dims, const void* weight_ptr,
+                          kuiper_base::DeviceType device_type = kuiper_base::DeviceType::kDeviceUnknown) override;
 
   void set_scales(const tensor::Tensor& scales);
 

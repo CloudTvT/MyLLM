@@ -6,9 +6,9 @@ namespace op{
 
 class VecAddLayer : public Layer{
   public:
-    explict VecAddLayer(kuiper_base::DeviceType device_type);
+    explicit VecAddLayer(kuiper_base::DeviceType device_type);
     kuiper_base::Status forward() override;
-    kuiper_base::Status check() override;
+    kuiper_base::Status check() const override;
 };
 }
 #endif

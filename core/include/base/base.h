@@ -4,6 +4,11 @@
 #include <cstdint>
 #include <string>
 
+#define UNUSED(expr) \
+  do {               \
+    (void)(expr);    \
+  } while (0)
+
 namespace model {
 /**
  * @brief 定义模型数据缓冲区的类型

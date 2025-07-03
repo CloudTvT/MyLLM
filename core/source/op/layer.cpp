@@ -1,4 +1,9 @@
 #include "op/layer.h"
+#include <base/cuda_config.h>
+#include <glog/logging.h>
+#include <cstdarg>
+#include <numeric>
+#include <utility>
 
 namespace op{
   BaseLayer::BaseLayer(kuiper_base::DeviceType device_type, LayerType layer_type, kuiper_base::DataType data_type, std::string layer_name)
@@ -76,7 +81,7 @@ kuiper_base::Status Layer::check_tensor_with_dim(const tensor::Tensor& tensor,
 void Layer::set_input(int32_t idx, const tensor::Tensor& input) {
   CHECK_GE(idx, 0);
   CHECK_LT(idx, inputs_.size());
-  this->inputs_.at(idx) = input;
+  this->inputs_.at(idx) = input; // vector深拷贝
 }
 
 void Layer::set_output(int32_t idx, const tensor::Tensor& output) {
