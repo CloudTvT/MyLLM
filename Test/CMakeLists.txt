@@ -7,9 +7,9 @@ set(link_ext_lib glog::glog GTest::gtest core CUDA::cudart)
 
 aux_source_directory(../Test DIR_TEST)
 aux_source_directory(../Test/Test_tensor DIR_TEST_TENSOR)
-aux_source_directory(../Test/Test_op/cpu DIR_TEST_OP_CPU)
+aux_source_directory(../Test/Test_op DIR_TEST_OP)
 
-add_executable(test_llm test_main.cpp ${DIR_TEST} ${DIR_TEST_TENSOR} ${DIR_TEST_OP_CPU})
+add_executable(test_llm test_main.cpp ${DIR_TEST} ${DIR_TEST_TENSOR} ${DIR_TEST_OP})
 
 target_link_libraries(test_llm ${link_ext_lib})
 target_include_directories(test_llm PUBLIC ${glog_INCLUDE_DIR})

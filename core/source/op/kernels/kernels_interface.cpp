@@ -8,8 +8,7 @@ AddKernel get_add_kernel(kuiper_base::DeviceType device_type) {
   if (device_type == kuiper_base::DeviceType::kDeviceCPU) {
     return add_kernel_cpu;
   } else if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
-    LOG(FATAL) << "Cuda Kernel is not implemented.";
-    return nullptr;
+    return add_kernel_cu;
   } else {
     LOG(FATAL) << "Unknown device type for get a add kernel.";
     return nullptr;
