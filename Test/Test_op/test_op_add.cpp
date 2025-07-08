@@ -60,6 +60,37 @@ TEST(test_op_add, add_cuda_nostream) {
   delete[] p3;
 }
 
+TEST(test_op_add, add_cpu2cuda_nostream) {
+  int32_t size = 32 * 32;
+  auto alloc_cpu = kuiper_base::CPUDeviceAllocatorFactory::get_instance();
+  auto alloc_cuda = kuiper_base::CUDADeviceAllocatorFactory::get_instance();
+  tensor::Tensor t1(kuiper_base::DataType::kDataTypeFp32, size, true, alloc_cpu);
+  tensor::Tensor t2(kuiper_base::DataType::kDataTypeFp32, size, true, alloc_cpu);
 
+  tensor::Tensor out(kuiper_base::DataType::kDataTypeFp32, size, true, alloc_cuda);
+  ASSERT_EQ(t1.is_empty(), false);
+  ASSERT_EQ(t2.is_empty(), false);
+  ASSERT_EQ(out.is_empty(), false);
+
+  float* p1_cpu = t1.ptr<float>();
+  float* p2_cpu = t2.ptr<float>();
+  for (int i = 0; i < 32 * 32; ++i) {
+    *(p1_cpu + i) = 1.f;
+    *(p2_cpu + i) = 1.f;
+  }
+  t1.to_cuda();
+  t2.to_cuda();
+
+  kernel::get_add_kernel(kuiper_base::DeviceType::kDeviceCUDA)(t1, t2, out, nullptr);
+  cudaDeviceSynchronize();// 主机与GPU同步
+  float* p3 = new float[size];
+  cudaMemcpy(p3,out.ptr<float>(),sizeof(float)*size,cudaMemcpyDeviceToHost);
+  
+  for (int i = 0; i < 32 * 32; ++i) {
+    ASSERT_EQ(*(p3 + i), 2.f);
+  }
+
+  delete[] p3;
+}
 
 

@@ -131,7 +131,7 @@ void Tensor::to_cuda(cudaStream_t stream){
   const kuiper_base::DeviceType device_type = this->device_type();
   if(device_type == kuiper_base::DeviceType::kDeviceUnknown){
     LOG(ERROR) << "The device type of the tensor is unknown.";
-  }else if(device_type == kuiper_base::DeviceType::kDeviceUnknown){
+  }else if(device_type == kuiper_base::DeviceType::kDeviceCPU){
     size_t byte_size = this->byte_size();
     auto cu_alloc = kuiper_base::CUDADeviceAllocatorFactory::get_instance();
     auto cu_buffer = std::make_shared<kuiper_base::Buffer>(byte_size,cu_alloc);
