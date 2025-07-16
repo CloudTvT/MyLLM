@@ -9,8 +9,13 @@
 #include "cpu/swiglu_kernel.h"
 #include "cpu/scale_kernel.h"
 #include "cpu/scale_sum_kernel.h"
-
 #include "cuda/add_kernel.cuh"
+#include "cuda/emb_kernel.cuh"
+#include "cuda/matmul_kernel.cuh"
+#include "cuda/mha_kernel.cuh"
+#include "cuda/rmsnorm_kernel.cuh"
+#include "cuda/rope_kernel.cuh"
+#include "cuda/swiglu_kernel.cuh"
 #include "kernels_interface.h"
 
 namespace kernel{
@@ -30,7 +35,7 @@ EmbeddingKernel get_emb_kernel(kuiper_base::DeviceType device_type) {
     return emb_kernel_normal;
   } else if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
     LOG(FATAL) << "Cuda device is not implemented.";
-    return nullptr;
+    return emb_kernel_cu;
   } else {
     LOG(FATAL) << "Unknown device type for get a add kernel.";
     return nullptr;
@@ -42,9 +47,18 @@ MatmulKernel get_matmul_kernel(kuiper_base::DeviceType device_type) {
     return matmul_kernel_cpu;
   } else if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
     LOG(FATAL) << "Cuda device is not implemented.";
-    return nullptr;
+    return matmul_kernel_cu;;
   } else {
     LOG(FATAL) << "Unknown device type for get a add kernel.";
+    return nullptr;
+  }
+}
+
+MatmulKernelQuant get_matmul_kernel_quant8(kuiper_base::DeviceType device_type) {
+  if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
+    return matmul_kernel_cu_qint8;
+  } else {
+    LOG(FATAL) << "Unknown device type for get an matmul kernel.";
     return nullptr;
   }
 }
@@ -54,9 +68,18 @@ RMSNormKernel get_rmsnorm_kernel(kuiper_base::DeviceType device_type) {
     return rmsnorm_kernel_cpu;
   } else if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
     LOG(FATAL) << "Cuda device is not implemented.";
-    return nullptr;
+    return rmsnorm_kernel_cu;
   } else {
     LOG(FATAL) << "Unknown device type for get a add kernel.";
+    return nullptr;
+  }
+}
+
+RMSNormKernelDim get_rmsnorm_dim_kernel(kuiper_base::DeviceType device_type) {
+  if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
+    return rmsnorm_kernel_cu_dim;
+  } else {
+    LOG(FATAL) << "Unknown device type for get a rmsnorm dim kernel.";
     return nullptr;
   }
 }
@@ -66,7 +89,7 @@ SwigluKernel get_swiglu_kernel(kuiper_base::DeviceType device_type, void* stream
     return swiglu_kernel_cpu;
   } else if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
     LOG(FATAL) << "Cuda device is not implemented.";
-    return nullptr;
+    return swiglu_kernel_cu;
   } else {
     LOG(FATAL) << "Unknown device type for get a swiglu kernel.";
     return nullptr;
@@ -87,7 +110,7 @@ MHAKernel get_mha_kernel(kuiper_base::DeviceType device_type) {
     return mha_kernel;
   } else if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
     LOG(FATAL) << "Cuda device is not implemented.";
-    return nullptr;
+    return mha_kernel_cu;
   } else {
     LOG(FATAL) << "Unknown device type for get an mha kernel.";
     return nullptr;
@@ -99,7 +122,7 @@ RoPEKernel get_rope_kernel(kuiper_base::DeviceType device_type) {
     return rope_kernel_cpu;
   } else if (device_type == kuiper_base::DeviceType::kDeviceCUDA) {
     LOG(FATAL) << "Cuda device is not implemented.";
-    return nullptr;
+    return rope_kernel_cu;
   } else {
     LOG(FATAL) << "Unknown device type for get a rope kernel.";
     return nullptr;

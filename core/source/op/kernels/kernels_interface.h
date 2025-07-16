@@ -15,6 +15,10 @@ namespace kernel{
 
   typedef void (*MatmulKernel)(const tensor::Tensor& input, const tensor::Tensor& weight,
                              const tensor::Tensor& output, float scale, const CudaConfig* config);
+  
+  typedef void (*MatmulKernelQuant)(const tensor::Tensor& input, const tensor::Tensor& weight,
+                                  const tensor::Tensor& output, int32_t group_size,
+                                  const tensor::Tensor& scale, const CudaConfig* config);
 
   typedef void (*SwigluKernel)(const tensor::Tensor& input1, const tensor::Tensor& input2,
                              const tensor::Tensor& output, void* stream);
@@ -50,6 +54,8 @@ namespace kernel{
   RMSNormKernel get_rmsnorm_kernel(kuiper_base::DeviceType device_type);
 
   MatmulKernel get_matmul_kernel(kuiper_base::DeviceType device_type);
+
+  MatmulKernelQuant get_matmul_kernel_quant8(kuiper_base::DeviceType device_type);
 
   MHAKernel get_mha_kernel(kuiper_base::DeviceType device_type);
 
